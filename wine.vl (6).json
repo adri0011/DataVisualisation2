@@ -1,0 +1,22 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {"text": "Worldwide Wine Consumption"},
+  "data": {
+    "url": "https://raw.githubusercontent.com/adri0011/dataset/main/drinks.csv"
+  },
+  "mark": "bar",
+  "encoding": {
+    "x": {
+      "field": "wine_servings",
+      "type": "quantitative",
+      "title": "Wine Servings (average service per person)"
+    },
+    "y": {
+      "field": "country",
+      "type": "nominal",
+      "title": "Country",
+      "sort": "-x"
+    }
+  },
+  "config": {}
+}

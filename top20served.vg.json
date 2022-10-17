@@ -1,0 +1,128 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "background": "white",
+  "padding": 5,
+  "width": 200,
+  "data": [
+    {
+      "name": "source_0",
+      "url": "https://raw.githubusercontent.com/adri0011/dataset/main/top20_drinks_type.csv",
+      "format": {"type": "csv", "delimiter": ","}
+    },
+    {
+      "name": "data_0",
+      "source": "source_0",
+      "transform": [
+        {
+          "type": "stack",
+          "groupby": ["country"],
+          "field": "total_litres_of_pure_alcohol",
+          "sort": {"field": [], "order": []},
+          "as": [
+            "total_litres_of_pure_alcohol_start",
+            "total_litres_of_pure_alcohol_end"
+          ],
+          "offset": "zero"
+        },
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"total_litres_of_pure_alcohol\"]) && isFinite(+datum[\"total_litres_of_pure_alcohol\"])"
+        }
+      ]
+    }
+  ],
+  "signals": [
+    {"name": "y_step", "value": 20},
+    {
+      "name": "height",
+      "update": "bandspace(domain('y').length, 0.1, 0.05) * y_step"
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "rect",
+      "style": ["bar"],
+      "from": {"data": "data_0"},
+      "encode": {
+        "update": {
+          "fill": {"value": "#4c78a8"},
+          "ariaRoleDescription": {"value": "bar"},
+          "description": {
+            "signal": "\"Total Alcohol Served (liters: \" + (format(datum[\"total_litres_of_pure_alcohol\"], \"\")) + \"; Country: \" + (isValid(datum[\"country\"]) ? datum[\"country\"] : \"\"+datum[\"country\"])"
+          },
+          "x": {"scale": "x", "field": "total_litres_of_pure_alcohol_end"},
+          "x2": {"scale": "x", "field": "total_litres_of_pure_alcohol_start"},
+          "y": {"scale": "y", "field": "country"},
+          "height": {"scale": "y", "band": 1}
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "linear",
+      "domain": {
+        "data": "data_0",
+        "fields": [
+          "total_litres_of_pure_alcohol_start",
+          "total_litres_of_pure_alcohol_end"
+        ]
+      },
+      "range": [0, {"signal": "width"}],
+      "nice": true,
+      "zero": true
+    },
+    {
+      "name": "y",
+      "type": "band",
+      "domain": {
+        "data": "source_0",
+        "field": "country",
+        "sort": {
+          "op": "sum",
+          "field": "total_litres_of_pure_alcohol",
+          "order": "descending"
+        }
+      },
+      "range": {"step": {"signal": "y_step"}},
+      "paddingInner": 0.1,
+      "paddingOuter": 0.05
+    }
+  ],
+  "axes": [
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "gridScale": "y",
+      "grid": true,
+      "tickCount": {"signal": "ceil(width/40)"},
+      "domain": false,
+      "labels": false,
+      "aria": false,
+      "maxExtent": 0,
+      "minExtent": 0,
+      "ticks": false,
+      "zindex": 0
+    },
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "grid": false,
+      "title": "Total Alcohol Served (liters)",
+      "labelFlush": true,
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(width/40)"},
+      "zindex": 0
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "grid": false,
+      "title": "Country",
+      "zindex": 0
+    }
+  ],
+  "config": {}
+}

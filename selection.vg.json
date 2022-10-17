@@ -1,0 +1,154 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "background": "white",
+  "padding": 5,
+  "title": {
+    "text": "The Most Served Alcohol in The Top 20 Countries of Total Alcohol Served",
+    "frame": "group"
+  },
+  "style": "cell",
+  "data": [
+    {"name": "org_store"},
+    {
+      "name": "source_0",
+      "url": "https://raw.githubusercontent.com/adri0011/dataset/main/top20_drinks_type.csv",
+      "format": {"type": "csv", "delimiter": ","}
+    }
+  ],
+  "signals": [
+    {"name": "x_step", "value": 20},
+    {
+      "name": "width",
+      "update": "bandspace(domain('x').length, 1, 0.5) * x_step"
+    },
+    {"name": "y_step", "value": 20},
+    {
+      "name": "height",
+      "update": "bandspace(domain('y').length, 1, 0.5) * y_step"
+    },
+    {
+      "name": "unit",
+      "value": {},
+      "on": [
+        {"events": "mousemove", "update": "isTuple(group()) ? group() : unit"}
+      ]
+    },
+    {
+      "name": "org_alcohol_servings",
+      "value": null,
+      "bind": {
+        "input": "select",
+        "options": ["Spirit", "Wine", "Beer"],
+        "name": "Alcoholic Drink Type:"
+      }
+    },
+    {
+      "name": "org",
+      "update": "vlSelectionResolve(\"org_store\", \"union\", true, true)"
+    },
+    {
+      "name": "org_tuple",
+      "update": "org_alcohol_servings !== null ? {fields: org_tuple_fields, values: [org_alcohol_servings]} : null"
+    },
+    {
+      "name": "org_tuple_fields",
+      "value": [{"type": "E", "field": "alcohol_servings"}]
+    },
+    {
+      "name": "org_modify",
+      "on": [
+        {
+          "events": {"signal": "org_tuple"},
+          "update": "modify(\"org_store\", org_tuple, true)"
+        }
+      ]
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "symbol",
+      "style": ["circle"],
+      "interactive": true,
+      "from": {"data": "source_0"},
+      "encode": {
+        "update": {
+          "opacity": {"value": 0.7},
+          "fill": [
+            {
+              "test": "!length(data(\"org_store\")) || vlSelectionTest(\"org_store\", datum)",
+              "scale": "color",
+              "field": "alcohol_servings"
+            },
+            {"value": "grey"}
+          ],
+          "tooltip": {
+            "signal": "{\"Country\": isValid(datum[\"country\"]) ? datum[\"country\"] : \"\"+datum[\"country\"], \"Total serving \": format(datum[\"total_litres_of_pure_alcohol\"], \"\")}"
+          },
+          "ariaRoleDescription": {"value": "circle"},
+          "description": {
+            "signal": "\"Country: \" + (isValid(datum[\"country\"]) ? datum[\"country\"] : \"\"+datum[\"country\"]) + \"; Total Serving: \" + (isValid(datum[\"total_litres_of_pure_alcohol\"]) ? datum[\"total_litres_of_pure_alcohol\"] : \"\"+datum[\"total_litres_of_pure_alcohol\"]) + \"; Alcoholic Drink Type: \" + (isValid(datum[\"alcohol_servings\"]) ? datum[\"alcohol_servings\"] : \"\"+datum[\"alcohol_servings\"]) + \"; Total serving : \" + (format(datum[\"total_litres_of_pure_alcohol\"], \"\"))"
+          },
+          "x": {"scale": "x", "field": "country"},
+          "y": {"scale": "y", "field": "total_litres_of_pure_alcohol"},
+          "shape": {"value": "circle"}
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "point",
+      "domain": {"data": "source_0", "field": "country", "sort": true},
+      "range": {"step": {"signal": "x_step"}},
+      "padding": 0.5
+    },
+    {
+      "name": "y",
+      "type": "point",
+      "domain": {
+        "data": "source_0",
+        "field": "total_litres_of_pure_alcohol",
+        "sort": true
+      },
+      "range": {"step": {"signal": "y_step"}},
+      "padding": 0.5
+    },
+    {
+      "name": "color",
+      "type": "ordinal",
+      "domain": {"data": "source_0", "field": "alcohol_servings", "sort": true},
+      "range": "ordinal",
+      "interpolate": "hcl"
+    }
+  ],
+  "axes": [
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "grid": false,
+      "title": "Country",
+      "labelAlign": "right",
+      "labelAngle": 270,
+      "labelBaseline": "middle",
+      "zindex": 0
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "grid": false,
+      "title": "Total Serving",
+      "zindex": 0
+    }
+  ],
+  "legends": [
+    {
+      "title": "Alcoholic Drink Type",
+      "fill": "color",
+      "symbolType": "circle",
+      "encode": {"symbols": {"update": {"opacity": {"value": 0.7}}}}
+    }
+  ],
+  "config": {}
+}

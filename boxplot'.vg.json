@@ -1,0 +1,357 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "autosize": {"type": "fit-y", "contains": "padding"},
+  "background": "white",
+  "padding": 5,
+  "width": 600,
+  "height": 300,
+  "title": {
+    "text": "Distribution of The Most Served Alcoholic Drink in The Top 20 Countries in Alcohol Consumption",
+    "frame": "group"
+  },
+  "style": "cell",
+  "data": [
+    {
+      "name": "source_0",
+      "url": "https://raw.githubusercontent.com/adri0011/dataset/main/top20_drinks_type.csv",
+      "format": {"type": "csv", "delimiter": ","}
+    },
+    {
+      "name": "data_0",
+      "source": "source_0",
+      "transform": [
+        {
+          "type": "joinaggregate",
+          "as": [
+            "lower_box_total_litres_of_pure_alcohol",
+            "upper_box_total_litres_of_pure_alcohol"
+          ],
+          "ops": ["q1", "q3"],
+          "fields": [
+            "total_litres_of_pure_alcohol",
+            "total_litres_of_pure_alcohol"
+          ],
+          "groupby": ["alcohol_servings", "alcohol_servings"]
+        }
+      ]
+    },
+    {
+      "name": "data_1",
+      "source": "data_0",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "(datum[\"total_litres_of_pure_alcohol\"] < datum[\"lower_box_total_litres_of_pure_alcohol\"] - 1.5 * (datum[\"upper_box_total_litres_of_pure_alcohol\"] - datum[\"lower_box_total_litres_of_pure_alcohol\"])) || (datum[\"total_litres_of_pure_alcohol\"] > datum[\"upper_box_total_litres_of_pure_alcohol\"] + 1.5 * (datum[\"upper_box_total_litres_of_pure_alcohol\"] - datum[\"lower_box_total_litres_of_pure_alcohol\"]))"
+        },
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"total_litres_of_pure_alcohol\"]) && isFinite(+datum[\"total_litres_of_pure_alcohol\"])"
+        }
+      ]
+    },
+    {
+      "name": "data_2",
+      "source": "data_0",
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "(datum[\"lower_box_total_litres_of_pure_alcohol\"] - 1.5 * (datum[\"upper_box_total_litres_of_pure_alcohol\"] - datum[\"lower_box_total_litres_of_pure_alcohol\"]) <= datum[\"total_litres_of_pure_alcohol\"]) && (datum[\"total_litres_of_pure_alcohol\"] <= datum[\"upper_box_total_litres_of_pure_alcohol\"] + 1.5 * (datum[\"upper_box_total_litres_of_pure_alcohol\"] - datum[\"lower_box_total_litres_of_pure_alcohol\"]))"
+        },
+        {
+          "type": "aggregate",
+          "groupby": ["alcohol_servings"],
+          "ops": ["min", "max", "min", "max"],
+          "fields": [
+            "total_litres_of_pure_alcohol",
+            "total_litres_of_pure_alcohol",
+            "lower_box_total_litres_of_pure_alcohol",
+            "upper_box_total_litres_of_pure_alcohol"
+          ],
+          "as": [
+            "lower_whisker_total_litres_of_pure_alcohol",
+            "upper_whisker_total_litres_of_pure_alcohol",
+            "lower_box_total_litres_of_pure_alcohol",
+            "upper_box_total_litres_of_pure_alcohol"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "data_3",
+      "source": "source_0",
+      "transform": [
+        {
+          "type": "aggregate",
+          "groupby": ["alcohol_servings"],
+          "ops": ["q1", "q3", "median", "min", "max"],
+          "fields": [
+            "total_litres_of_pure_alcohol",
+            "total_litres_of_pure_alcohol",
+            "total_litres_of_pure_alcohol",
+            "total_litres_of_pure_alcohol",
+            "total_litres_of_pure_alcohol"
+          ],
+          "as": [
+            "lower_box_total_litres_of_pure_alcohol",
+            "upper_box_total_litres_of_pure_alcohol",
+            "mid_box_total_litres_of_pure_alcohol",
+            "min_total_litres_of_pure_alcohol",
+            "max_total_litres_of_pure_alcohol"
+          ]
+        }
+      ]
+    }
+  ],
+  "signals": [
+    {
+      "name": "height",
+      "init": "isFinite(containerSize()[1]) ? containerSize()[1] : 200",
+      "on": [
+        {
+          "update": "isFinite(containerSize()[1]) ? containerSize()[1] : 200",
+          "events": "window:resize"
+        }
+      ]
+    }
+  ],
+  "marks": [
+    {
+      "name": "layer_0_layer_0_marks",
+      "type": "symbol",
+      "style": ["point", "boxplot-outliers"],
+      "from": {"data": "data_1"},
+      "encode": {
+        "update": {
+          "opacity": {"value": 0.7},
+          "fill": {"value": "transparent"},
+          "stroke": {"scale": "color", "field": "alcohol_servings"},
+          "tooltip": {
+            "signal": "{\"The Most Served Alcoholic Drink Type\": isValid(datum[\"alcohol_servings\"]) ? datum[\"alcohol_servings\"] : \"\"+datum[\"alcohol_servings\"], \"Average Serving per Person\": format(datum[\"total_litres_of_pure_alcohol\"], \"\")}"
+          },
+          "ariaRoleDescription": {"value": "point"},
+          "description": {
+            "signal": "\"The Most Served Alcoholic Drink Types: \" + (isValid(datum[\"alcohol_servings\"]) ? datum[\"alcohol_servings\"] : \"\"+datum[\"alcohol_servings\"]) + \"; Total Serving: \" + (format(datum[\"total_litres_of_pure_alcohol\"], \"\")) + \"; alcohol_servings: \" + (isValid(datum[\"alcohol_servings\"]) ? datum[\"alcohol_servings\"] : \"\"+datum[\"alcohol_servings\"]) + \"; The Most Served Alcoholic Drink Type: \" + (isValid(datum[\"alcohol_servings\"]) ? datum[\"alcohol_servings\"] : \"\"+datum[\"alcohol_servings\"]) + \"; Average Serving per Person: \" + (format(datum[\"total_litres_of_pure_alcohol\"], \"\"))"
+          },
+          "x": {"scale": "x", "field": "alcohol_servings", "band": 0.5},
+          "y": {"scale": "y", "field": "total_litres_of_pure_alcohol"}
+        }
+      }
+    },
+    {
+      "name": "layer_0_layer_1_layer_0_marks",
+      "type": "rule",
+      "style": ["rule", "boxplot-rule"],
+      "aria": false,
+      "from": {"data": "data_2"},
+      "encode": {
+        "update": {
+          "stroke": {"value": "black"},
+          "tooltip": {
+            "signal": "{\"Upper Whisker of Total Serving\": format(datum[\"upper_whisker_total_litres_of_pure_alcohol\"], \"\"), \"Lower Whisker of Total Serving\": format(datum[\"lower_whisker_total_litres_of_pure_alcohol\"], \"\"), \"The Most Served Alcoholic Drink Types\": isValid(datum[\"alcohol_servings\"]) ? datum[\"alcohol_servings\"] : \"\"+datum[\"alcohol_servings\"], \"alcohol_servings\": isValid(datum[\"alcohol_servings\"]) ? datum[\"alcohol_servings\"] : \"\"+datum[\"alcohol_servings\"]}"
+          },
+          "x": {"scale": "x", "field": "alcohol_servings", "band": 0.5},
+          "y": [
+            {
+              "test": "!isValid(datum[\"lower_whisker_total_litres_of_pure_alcohol\"]) || !isFinite(+datum[\"lower_whisker_total_litres_of_pure_alcohol\"])",
+              "field": {"group": "height"}
+            },
+            {
+              "scale": "y",
+              "field": "lower_whisker_total_litres_of_pure_alcohol"
+            }
+          ],
+          "y2": [
+            {
+              "test": "!isValid(datum[\"lower_box_total_litres_of_pure_alcohol\"]) || !isFinite(+datum[\"lower_box_total_litres_of_pure_alcohol\"])",
+              "field": {"group": "height"}
+            },
+            {"scale": "y", "field": "lower_box_total_litres_of_pure_alcohol"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "layer_0_layer_1_layer_1_marks",
+      "type": "rule",
+      "style": ["rule", "boxplot-rule"],
+      "aria": false,
+      "from": {"data": "data_2"},
+      "encode": {
+        "update": {
+          "stroke": {"value": "black"},
+          "tooltip": {
+            "signal": "{\"Upper Whisker of Total Serving\": format(datum[\"upper_whisker_total_litres_of_pure_alcohol\"], \"\"), \"Lower Whisker of Total Serving\": format(datum[\"lower_whisker_total_litres_of_pure_alcohol\"], \"\"), \"The Most Served Alcoholic Drink Types\": isValid(datum[\"alcohol_servings\"]) ? datum[\"alcohol_servings\"] : \"\"+datum[\"alcohol_servings\"], \"alcohol_servings\": isValid(datum[\"alcohol_servings\"]) ? datum[\"alcohol_servings\"] : \"\"+datum[\"alcohol_servings\"]}"
+          },
+          "x": {"scale": "x", "field": "alcohol_servings", "band": 0.5},
+          "y": [
+            {
+              "test": "!isValid(datum[\"upper_box_total_litres_of_pure_alcohol\"]) || !isFinite(+datum[\"upper_box_total_litres_of_pure_alcohol\"])",
+              "field": {"group": "height"}
+            },
+            {"scale": "y", "field": "upper_box_total_litres_of_pure_alcohol"}
+          ],
+          "y2": [
+            {
+              "test": "!isValid(datum[\"upper_whisker_total_litres_of_pure_alcohol\"]) || !isFinite(+datum[\"upper_whisker_total_litres_of_pure_alcohol\"])",
+              "field": {"group": "height"}
+            },
+            {
+              "scale": "y",
+              "field": "upper_whisker_total_litres_of_pure_alcohol"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "layer_1_layer_0_marks",
+      "type": "rect",
+      "style": ["bar", "boxplot-box"],
+      "from": {"data": "data_3"},
+      "encode": {
+        "update": {
+          "ariaRoleDescription": {"value": "box"},
+          "fill": {"scale": "color", "field": "alcohol_servings"},
+          "tooltip": {
+            "signal": "{\"Max of Total Serving\": format(datum[\"max_total_litres_of_pure_alcohol\"], \"\"), \"Q3 of Total Serving\": format(datum[\"upper_box_total_litres_of_pure_alcohol\"], \"\"), \"Median of Total Serving\": format(datum[\"mid_box_total_litres_of_pure_alcohol\"], \"\"), \"Q1 of Total Serving\": format(datum[\"lower_box_total_litres_of_pure_alcohol\"], \"\"), \"Min of Total Serving\": format(datum[\"min_total_litres_of_pure_alcohol\"], \"\"), \"The Most Served Alcoholic Drink Types\": isValid(datum[\"alcohol_servings\"]) ? datum[\"alcohol_servings\"] : \"\"+datum[\"alcohol_servings\"], \"alcohol_servings\": isValid(datum[\"alcohol_servings\"]) ? datum[\"alcohol_servings\"] : \"\"+datum[\"alcohol_servings\"]}"
+          },
+          "description": {
+            "signal": "\"The Most Served Alcoholic Drink Types: \" + (isValid(datum[\"alcohol_servings\"]) ? datum[\"alcohol_servings\"] : \"\"+datum[\"alcohol_servings\"]) + \"; Total Serving: \" + (format(datum[\"lower_box_total_litres_of_pure_alcohol\"], \"\")) + \"; upper_box_total_litres_of_pure_alcohol: \" + (format(datum[\"upper_box_total_litres_of_pure_alcohol\"], \"\")) + \"; alcohol_servings: \" + (isValid(datum[\"alcohol_servings\"]) ? datum[\"alcohol_servings\"] : \"\"+datum[\"alcohol_servings\"]) + \"; Max of Total Serving: \" + (format(datum[\"max_total_litres_of_pure_alcohol\"], \"\")) + \"; Q3 of Total Serving: \" + (format(datum[\"upper_box_total_litres_of_pure_alcohol\"], \"\")) + \"; Median of Total Serving: \" + (format(datum[\"mid_box_total_litres_of_pure_alcohol\"], \"\")) + \"; Q1 of Total Serving: \" + (format(datum[\"lower_box_total_litres_of_pure_alcohol\"], \"\")) + \"; Min of Total Serving: \" + (format(datum[\"min_total_litres_of_pure_alcohol\"], \"\"))"
+          },
+          "xc": {"scale": "x", "field": "alcohol_servings", "band": 0.5},
+          "width": {"value": 14},
+          "y": [
+            {
+              "test": "!isValid(datum[\"lower_box_total_litres_of_pure_alcohol\"]) || !isFinite(+datum[\"lower_box_total_litres_of_pure_alcohol\"])",
+              "field": {"group": "height"}
+            },
+            {"scale": "y", "field": "lower_box_total_litres_of_pure_alcohol"}
+          ],
+          "y2": [
+            {
+              "test": "!isValid(datum[\"upper_box_total_litres_of_pure_alcohol\"]) || !isFinite(+datum[\"upper_box_total_litres_of_pure_alcohol\"])",
+              "field": {"group": "height"}
+            },
+            {"scale": "y", "field": "upper_box_total_litres_of_pure_alcohol"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "layer_1_layer_1_marks",
+      "type": "rect",
+      "style": ["tick", "boxplot-median"],
+      "aria": false,
+      "from": {"data": "data_3"},
+      "encode": {
+        "update": {
+          "opacity": {"value": 0.7},
+          "fill": {"value": "white"},
+          "tooltip": {
+            "signal": "{\"Max of Total Serving\": format(datum[\"max_total_litres_of_pure_alcohol\"], \"\"), \"Q3 of Total Serving\": format(datum[\"upper_box_total_litres_of_pure_alcohol\"], \"\"), \"Median of Total Serving\": format(datum[\"mid_box_total_litres_of_pure_alcohol\"], \"\"), \"Q1 of Total Serving\": format(datum[\"lower_box_total_litres_of_pure_alcohol\"], \"\"), \"Min of Total Serving\": format(datum[\"min_total_litres_of_pure_alcohol\"], \"\"), \"The Most Served Alcoholic Drink Types\": isValid(datum[\"alcohol_servings\"]) ? datum[\"alcohol_servings\"] : \"\"+datum[\"alcohol_servings\"], \"alcohol_servings\": isValid(datum[\"alcohol_servings\"]) ? datum[\"alcohol_servings\"] : \"\"+datum[\"alcohol_servings\"]}"
+          },
+          "xc": {"scale": "x", "field": "alcohol_servings", "band": 0.5},
+          "yc": [
+            {
+              "test": "!isValid(datum[\"mid_box_total_litres_of_pure_alcohol\"]) || !isFinite(+datum[\"mid_box_total_litres_of_pure_alcohol\"])",
+              "field": {"group": "height"}
+            },
+            {"scale": "y", "field": "mid_box_total_litres_of_pure_alcohol"}
+          ],
+          "width": {"value": 14},
+          "height": {"value": 1}
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "band",
+      "domain": {
+        "fields": [
+          {"data": "data_1", "field": "alcohol_servings"},
+          {"data": "data_2", "field": "alcohol_servings"},
+          {"data": "data_3", "field": "alcohol_servings"}
+        ],
+        "sort": true
+      },
+      "range": [0, {"signal": "width"}],
+      "paddingInner": 0,
+      "paddingOuter": 0
+    },
+    {
+      "name": "y",
+      "type": "linear",
+      "domain": {
+        "fields": [
+          {"data": "data_1", "field": "total_litres_of_pure_alcohol"},
+          {
+            "data": "data_2",
+            "field": "lower_whisker_total_litres_of_pure_alcohol"
+          },
+          {"data": "data_2", "field": "lower_box_total_litres_of_pure_alcohol"},
+          {"data": "data_2", "field": "upper_box_total_litres_of_pure_alcohol"},
+          {
+            "data": "data_2",
+            "field": "upper_whisker_total_litres_of_pure_alcohol"
+          },
+          {"data": "data_3", "field": "lower_box_total_litres_of_pure_alcohol"},
+          {"data": "data_3", "field": "upper_box_total_litres_of_pure_alcohol"},
+          {"data": "data_3", "field": "mid_box_total_litres_of_pure_alcohol"}
+        ]
+      },
+      "range": [{"signal": "height"}, 0],
+      "zero": false,
+      "nice": true
+    },
+    {
+      "name": "color",
+      "type": "ordinal",
+      "domain": {
+        "fields": [
+          {"data": "data_1", "field": "alcohol_servings"},
+          {"data": "data_3", "field": "alcohol_servings"}
+        ],
+        "sort": true
+      },
+      "range": "category"
+    }
+  ],
+  "axes": [
+    {
+      "scale": "y",
+      "orient": "left",
+      "gridScale": "x",
+      "grid": true,
+      "tickCount": {"signal": "ceil(height/40)"},
+      "domain": false,
+      "labels": false,
+      "aria": false,
+      "maxExtent": 0,
+      "minExtent": 0,
+      "ticks": false,
+      "zindex": 0
+    },
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "grid": false,
+      "title": "The Most Served Alcoholic Drink Types",
+      "labelAlign": "right",
+      "labelAngle": 270,
+      "labelBaseline": "middle",
+      "zindex": 0
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "grid": false,
+      "title": "Total Serving",
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(height/40)"},
+      "zindex": 0
+    }
+  ],
+  "config": {}
+}

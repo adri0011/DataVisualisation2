@@ -1,0 +1,22 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {"text": "Top 20 Countries of Total Alcohol Served"},
+  "data": {
+    "url": "https://raw.githubusercontent.com/adri0011/dataset/main/top20_drinks_type.csv"
+  },
+  "mark": "bar",
+  "encoding": {
+    "x": {
+      "field": "total_litres_of_pure_alcohol",
+      "type": "quantitative",
+      "title": "Total Alcohol Served (liters)"
+    },
+    "y": {
+      "field": "country",
+      "type": "nominal",
+      "title": "Country",
+      "sort": "-x"
+    }
+  },
+  "config": {}
+}

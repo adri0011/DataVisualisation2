@@ -1,0 +1,48 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Top 20 Countries of Total Alcohol Served",
+  "data": {
+    "url": "https://raw.githubusercontent.com/adri0011/dataset/main/top20_drinks_type.csv"
+  },
+  "params": [
+    {
+      "name": "org",
+      "select": {"type": "point", "fields": ["alcohol_servings"]},
+      "bind": {
+        "input": "select",
+        "options": ["Spirit", "Wine", "Beer"],
+        "name": "Alcoholic Drink Type:"
+      }
+    }
+  ],
+  "mark": "circle",
+  "encoding": {
+    "x": {"field": "country", "type": "nominal", "title": "Country"},
+    "y": {
+      "field": "total_litres_of_pure_alcohol",
+      "type": "nominal",
+      "title": "Average Serving per Person "
+    },
+    "color": {
+      "condition": {
+        "param": "org",
+        "field": "alcohol_servings",
+        "type": "ordinal",
+        "title": "Alcoholic Drink Type",
+        "scale": {
+          "domain": ["Spirit", "Wine", "Beer"],
+          "range": ["#064789","#427AA1","#5BC0BE"]}
+      },
+      "value": ["#064789","#427AA1","#5BC0BE"]
+    },
+    "tooltip": [
+      {"field": "country", "type": "nominal", "title": "Country"},
+      {
+        "field": "total_litres_of_pure_alcohol",
+        "type": "quantitative",
+        "title": "Average Serving per Person "
+      }
+    ]
+  },
+  "config": {}
+}

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Distribution of Top 20 Countries in Alcohol Consumption",
+  "width": 600,
+  "height": 300,
+  "data": {
+    "url": "https://raw.githubusercontent.com/adri0011/dataset/main/top20_drinks_type.csv"
+  },
+  "mark": "boxplot",
+  "encoding": {
+    "x": {
+      "field": "alcohol_servings",
+      "type": "nominal",
+      "title": "Alcoholic Drink Types"
+    },
+    "color": {"field": "alcohol_servings", "type": "nominal", "legend": null},
+    "y": {
+      "field": "total_litres_of_pure_alcohol",
+      "type": "quantitative",
+      "title": "Average Servings per Person",
+      "scale": {
+        "zero": false}
+    },
+    "tooltip": [
+      {
+        "field": "alcohol_servings",
+        "type": "nominal",
+        "title": "Alcoholic Drink Type"
+      },
+      {
+        "field": "total_litres_of_pure_alcohol",
+        "type": "quantitative",
+        "title": "Average Serving per Person"
+      }
+    ]
+  },
+  "config": {}
+}

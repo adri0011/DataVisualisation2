@@ -1,0 +1,93 @@
+@font-face {
+    font-family: "OpenSans-Regular";
+    src: url(OpenSans-Regular.ttf);
+}
+
+.background {
+    background-color: rgb(141, 202, 223);
+    padding: 10px;
+    font-size: medium;
+    font-family: "OpenSans-Regular";
+    border-style: groove;
+    border-color: darkblue;
+    height: fit-content;
+    text-align: center;
+   
+}
+
+.header {
+    background-color: #FCAA67 ;
+    margin-left: auto;
+    margin-right: auto;
+    width:900px;
+    padding: 30px;
+    color:white;
+    text-align: center;
+}
+
+.subheadings {
+    float: center;
+    font-size: medium;
+    color:black;
+    text-align: center
+}
+
+.page {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    box-align: center;
+    color: rgb(234, 234, 237);
+    padding: 10px;
+    font-size: medium;
+    font-family: "OpenSans-Regular";
+    position: relative;
+    width: 1000px;
+}
+
+.text {
+    text-align:justify;
+    padding: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 25px;
+    font-family: "OpenSans-Regular";
+}
+
+#map1 {
+    float: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+    
+#map2 {
+    float: center;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+#map3 {
+    float: center;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+#map4 {
+    float: center;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+.source {
+    text-align:center;
+    padding: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-family: "OpenSans-Regular";
+
+}
+

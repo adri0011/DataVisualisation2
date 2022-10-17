@@ -1,0 +1,22 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {"text": "Worldwide Spirit Consumption"},
+  "data": {
+    "url": "https://raw.githubusercontent.com/adri0011/dataset/main/drinks.csv"
+  },
+  "mark": "bar",
+  "encoding": {
+    "x": {
+      "field": "spirit_servings",
+      "type": "quantitative",
+      "title": "Spirit Servings (average service per person)"
+    },
+    "y": {
+      "field": "country",
+      "type": "nominal",
+      "title": "Country",
+      "sort": "-x"
+    }
+  },
+  "config": {}
+}
